@@ -5,19 +5,21 @@ const router = express.Router();
 //* Import Models
 const projectsModel = require("./model");
 
+//* Import Middleware
+const getMiddleware = require("../middleware/middleware");
+
 //* Handle Endpoints
 
 //-- GET
-router.get("/", (req, res) => {
-  projectsModel
-    .getAll()
-    .then((projects) => {
-      res.status(200).json(projects);
-    })
-    .catch((err) => {
-      res.status(500).json(err);
-    });
-});
+router.get(
+  "/",
+  getMiddleware.convertIntToBool(projectsModel, "project_completed", "get"),
+  (req, res) => {
+    const { newObjs } = req;
+
+    res.status(200).json(newObjs);
+  }
+);
 
 router.get("/:id", (req, res) => {
   const { id } = req.params;
@@ -33,18 +35,15 @@ router.get("/:id", (req, res) => {
 });
 
 //-- POST
-router.post("/", (req, res) => {
-  const projectData = req.body;
+router.post(
+  "/",
+  getMiddleware.convertIntToBool(projectsModel, "project_completed", "post"),
+  (req, res) => {
+    const { newObj } = req;
 
-  projectsModel
-    .create(projectData)
-    .then((project) => {
-      res.status(201).json(project);
-    })
-    .catch((err) => {
-      res.status(500).json(err);
-    });
-});
+    res.status(201).json(newObj[0]);
+  }
+);
 
 //* Export Router
 module.exports = router;

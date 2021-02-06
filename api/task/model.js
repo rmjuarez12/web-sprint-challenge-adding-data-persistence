@@ -3,7 +3,11 @@ const db = require("../../data/dbConfig");
 
 //* Function to get all tasks
 function getAll() {
-  return db("tasks");
+  return db("tasks").innerJoin(
+    "projects",
+    "projects.project_id",
+    "tasks.project_id"
+  );
 }
 
 //* Function to get a specific task

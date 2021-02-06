@@ -5,20 +5,22 @@ const router = express.Router();
 //* Import models
 const tasksModel = require("./model");
 
+//* Import Middleware
+const getMiddleware = require("../middleware/middleware");
+
 //* Handle Endpoints
 
 //-- GET
 // Get all tasks
-router.get("/", (req, res) => {
-  tasksModel
-    .getAll()
-    .then((tasks) => {
-      res.status(200).json(tasks);
-    })
-    .catch((err) => {
-      res.status(500).json(err);
-    });
-});
+router.get(
+  "/",
+  getMiddleware.convertIntToBool(tasksModel, "task_completed", "get"),
+  (req, res) => {
+    const { newObjs } = req;
+
+    res.status(200).json(newObjs);
+  }
+);
 
 router.get("/:id", (req, res) => {
   const { id } = req.params;
@@ -34,18 +36,15 @@ router.get("/:id", (req, res) => {
 });
 
 //-- POST
-router.post("/", (req, res) => {
-  const task = req.body;
+router.post(
+  "/",
+  getMiddleware.convertIntToBool(tasksModel, "task_completed", "post"),
+  (req, res) => {
+    const { newObj } = req;
 
-  tasksModel
-    .create(task)
-    .then((task) => {
-      res.status(201).json(task);
-    })
-    .catch((err) => {
-      res.status(500).json(err);
-    });
-});
+    res.status(201).json(newObj[0]);
+  }
+);
 
 //* Export Router
 module.exports = router;

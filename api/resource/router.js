@@ -42,7 +42,7 @@ router.post("/", (req, res) => {
   resourcesModel
     .create(resourceData)
     .then((resource) => {
-      res.status(201).json(resource);
+      res.status(201).json(resource[0]);
     })
     .catch((err) => {
       res.status(500).json(err);
