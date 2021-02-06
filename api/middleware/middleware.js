@@ -12,13 +12,13 @@ const convertIntToBool = (model, key, method) => (req, res, next) => {
         res.status(500).json(err);
       });
   } else {
-    const projectData = req.body;
+    const insertData = req.body;
 
     model
-      .create(projectData)
-      .then((project) => {
-        const newProject = convertIntToBoolHelper(project, key);
-        req.newObj = newProject;
+      .create(insertData)
+      .then((obj) => {
+        const response = convertIntToBoolHelper(obj, key);
+        req.newObj = response;
         next();
       })
       .catch((err) => {
@@ -32,7 +32,7 @@ function convertIntToBoolHelper(array, key) {
   const convertedArray = array.map((item) => {
     const fullObj = {
       ...item,
-      [key]: item.project_completed === 0 ? false : true,
+      [key]: item[key] === 0 ? false : true,
     };
 
     return fullObj;
